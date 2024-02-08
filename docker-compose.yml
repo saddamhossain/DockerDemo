@@ -1,0 +1,27 @@
+version: '3.4'
+
+services:
+  products.api:
+    image: ${DOCKER_REGISTRY-}productsapi
+    container_name: productsApi
+    build:
+      context: .
+      dockerfile: Products.Api/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+     - products.database
+
+  products.database:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        container_name: productsDB
+        environment:
+            - ACCEPT_EULA=Y
+            - MSSQL_PID=Developer
+            - MSSQL_SA_PASSWORD=MyComplexPassword123@
+        volumes:
+            - ./.containers/products-sql-server:/var/opt/mssql/data
+        ports:
+        - 8002:1433
+     
